@@ -1,4 +1,4 @@
-#![allow(non_camel_case_types)]
+#![allow(non_camel_case_types, clippy::upper_case_acronyms)]
 
 use chrono::{DateTime, Utc};
 use eyre::Result;
@@ -14,6 +14,12 @@ enum TradeType {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Dividend {
+    description: String,
+    quantity: f64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct DivAdj {
     description: String,
     quantity: f64,
 }
@@ -38,7 +44,29 @@ struct DividendEvent {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+struct DivAdjEvent {
+    amount: f64,
+    date: DateTime<Utc>,
+    #[serde(alias = "type")]
+    event_type: EventTypeEnum,
+    adjustment: DivAdj,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 struct Journal {
+    description: String,
+    quantity: f64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+enum OptionType {
+    OPTEXP,
+    expiration,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Option {
+    option_type: OptionType,
     description: String,
     quantity: f64,
 }
@@ -53,6 +81,15 @@ struct JournalEvent {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+struct OptionEvent {
+    amount: f64,
+    date: DateTime<Utc>,
+    #[serde(alias = "type")]
+    event_type: EventTypeEnum,
+    option: Option,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 struct TradeEvent {
     amount: f64,
     date: DateTime<Utc>,
@@ -64,7 +101,9 @@ struct TradeEvent {
 #[derive(Debug, Serialize, Deserialize)]
 enum EventTypeEnum {
     dividend,
+    DIVADJ,
     journal,
+    option,
     trade,
 }
 
@@ -72,7 +111,9 @@ enum EventTypeEnum {
 #[serde(untagged)]
 enum EventType {
     Dividend(DividendEvent),
+    DivAdj(DivAdjEvent),
     Journal(JournalEvent),
+    Option(OptionEvent),
     Trade(TradeEvent),
 }
 
@@ -139,7 +180,6 @@ mod tests {
             .with_body(include_str!("test_requests/get_history.json"))
             .create();
 
-        get_history("VA000000".into()).await.unwrap();
         let response = get_history("VA000000".into()).await;
         assert!(response.is_ok());
     }
