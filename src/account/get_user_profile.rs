@@ -43,17 +43,17 @@ struct Account {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-#[serde(untagged)]
-enum AccountEnum {
-    AccountVec(Vec<Account>),
-    AccountUnit(Account),
-}
-
-#[derive(Debug, Serialize, Deserialize)]
 struct Profile {
     id: String,
     name: String,
-    account: AccountEnum,
+    account: Vec<Account>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct SingleProfile {
+    id: String,
+    name: String,
+    account: Account,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -61,14 +61,37 @@ pub struct UserProfile {
     profile: Profile,
 }
 
-pub async fn get_user_profile() -> Result<UserProfile> {
-    println!(
-        "{:?}",
-        build_request("user/profile").send().await?.text().await?
-    );
-    let response: UserProfile = build_request("user/profile").send().await?.json().await?;
+#[derive(Debug, Serialize, Deserialize)]
+struct SingleUserProfile {
+    profile: SingleProfile,
+}
 
-    Ok(response)
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(untagged)]
+enum ProfileEnum {
+    ProfileUnit(SingleUserProfile),
+    ProfileVec(UserProfile),
+}
+
+impl From<ProfileEnum> for UserProfile {
+    fn from(item: ProfileEnum) -> UserProfile {
+        match item {
+            ProfileEnum::ProfileUnit(unit) => UserProfile {
+                profile: Profile {
+                    id: unit.profile.id,
+                    name: unit.profile.name,
+                    account: vec![unit.profile.account],
+                },
+            },
+            ProfileEnum::ProfileVec(profile) => profile,
+        }
+    }
+}
+
+pub async fn get_user_profile() -> Result<UserProfile> {
+    let response: ProfileEnum = build_request("user/profile").send().await?.json().await?;
+
+    Ok(response.into())
 }
 
 #[cfg(test)]
@@ -81,6 +104,17 @@ mod tests {
         let _m = mock("GET", "/v1/user/profile")
             .with_status(200)
             .with_body(include_str!("get_user_profile.json"))
+            .create();
+
+        let response = get_user_profile().await;
+        assert!(response.is_ok());
+    }
+
+    #[tokio::test]
+    async fn test_get_user_profile_single() {
+        let _m = mock("GET", "/v1/user/profile")
+            .with_status(200)
+            .with_body(include_str!("get_user_profile_single.json"))
             .create();
 
         let response = get_user_profile().await;
