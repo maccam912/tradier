@@ -45,8 +45,8 @@ struct Account {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(untagged)]
 enum AccountEnum {
-    Vec(Account),
-    Account,
+    AccountVec(Vec<Account>),
+    AccountUnit(Account),
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -74,9 +74,15 @@ pub async fn get_user_profile() -> Result<UserProfile> {
 #[cfg(test)]
 mod tests {
     use crate::account::get_user_profile::get_user_profile;
+    use mockito::mock;
 
     #[tokio::test]
     async fn test_get_user_profile() {
+        let _m = mock("GET", "/v1/user/profile")
+            .with_status(200)
+            .with_body(include_str!("get_user_profile.json"))
+            .create();
+
         let response = get_user_profile().await;
         assert!(response.is_ok());
     }

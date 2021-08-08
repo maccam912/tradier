@@ -1,3 +1,6 @@
+#[cfg(test)]
+use mockito;
+
 use once_cell::sync::Lazy;
 use reqwest::RequestBuilder;
 
@@ -13,6 +16,10 @@ static CONFIG: Lazy<config::Config> = Lazy::new(|| {
 
 static TOKEN: Lazy<String> = Lazy::new(|| CONFIG.get_str("token").unwrap());
 
+#[cfg(test)]
+static ENDPOINT: Lazy<String> = Lazy::new(|| mockito::server_url());
+
+#[cfg(not(test))]
 static ENDPOINT: Lazy<String> = Lazy::new(|| CONFIG.get_str("endpoint").unwrap());
 
 fn endpoint(path: &str) -> String {
