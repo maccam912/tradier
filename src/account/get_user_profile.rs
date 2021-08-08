@@ -96,14 +96,15 @@ pub async fn get_user_profile() -> Result<UserProfile> {
 
 #[cfg(test)]
 mod tests {
-    use crate::account::get_user_profile::get_user_profile;
     use mockito::mock;
+
+    use crate::account::get_user_profile::get_user_profile;
 
     #[tokio::test]
     async fn test_get_user_profile() {
         let _m = mock("GET", "/v1/user/profile")
             .with_status(200)
-            .with_body(include_str!("get_user_profile.json"))
+            .with_body(include_str!("test_requests/get_user_profile.json"))
             .create();
 
         let response = get_user_profile().await;
@@ -114,7 +115,7 @@ mod tests {
     async fn test_get_user_profile_single() {
         let _m = mock("GET", "/v1/user/profile")
             .with_status(200)
-            .with_body(include_str!("get_user_profile_single.json"))
+            .with_body(include_str!("test_requests/get_user_profile_single.json"))
             .create();
 
         let response = get_user_profile().await;
