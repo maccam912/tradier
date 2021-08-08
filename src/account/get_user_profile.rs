@@ -77,6 +77,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_user_profile() {
-        let response = get_user_profile().await.unwrap();
+        let response = get_user_profile().await;
+        assert!(response.is_ok());
     }
 }
