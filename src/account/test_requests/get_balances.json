@@ -18,7 +18,6 @@
         "total_cash": 6363.860000000000000000000000,
         "uncleared_funds": 0,
         "pending_cash": 0,
-
         "margin": {
             "fed_call": 0,
             "maintenance_call": 0,
@@ -32,7 +31,6 @@
             "sweep": 0,
             "unsettled_funds": 1310.00000000
         },
-
         "pdt": {
             "fed_call": 0,
             "maintenance_call": 0,
