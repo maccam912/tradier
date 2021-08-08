@@ -83,7 +83,7 @@ impl From<ProfileEnum> for UserProfile {
                     account: vec![unit.profile.account],
                 },
             },
-            ProfileEnum::ProfileVec(profile) => profile,
+            ProfileEnum::ProfileVec(root) => root,
         }
     }
 }

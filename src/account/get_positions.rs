@@ -50,7 +50,7 @@ impl From<PositionsEnum> for PositionsRoot {
                     position: vec![unit.positions.position],
                 },
             },
-            PositionsEnum::PositionsVec(profile) => profile,
+            PositionsEnum::PositionsVec(root) => root,
         }
     }
 }
@@ -72,7 +72,7 @@ mod tests {
     use crate::account::get_positions::get_positions;
 
     #[tokio::test]
-    async fn test_get_user_profile() {
+    async fn test_get_positions() {
         let _m = mock("GET", "/v1/accounts/VA000000/positions")
             .with_status(200)
             .with_body(include_str!("test_requests/get_positions.json"))
@@ -83,7 +83,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_get_user_profile_single() {
+    async fn test_get_positions_single() {
         let _m = mock("GET", "/v1/accounts/VA000000/positions")
             .with_status(200)
             .with_body(include_str!("test_requests/get_positions_single.json"))

@@ -1,0 +1,17 @@
+{
+    "history": {
+        "event": {
+            "amount": 10.06,
+            "date": "2018-10-31T00:00:00Z",
+            "type": "trade",
+            "trade": {
+                "commission": 0.0000000000,
+                "description": "GENERAL ELECTRIC COMPANY",
+                "price": 10.060000,
+                "quantity": -1.00000000,
+                "symbol": "GE",
+                "trade_type": "Equity"
+            }
+        }
+    }
+}
