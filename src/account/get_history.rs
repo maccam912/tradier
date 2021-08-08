@@ -65,7 +65,7 @@ enum OptionType {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Option {
+struct TradierOption {
     option_type: OptionType,
     description: String,
     quantity: f64,
@@ -86,7 +86,7 @@ struct OptionEvent {
     date: DateTime<Utc>,
     #[serde(alias = "type")]
     event_type: EventTypeEnum,
-    option: Option,
+    option: TradierOption,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -99,12 +99,20 @@ struct TradeEvent {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-enum EventTypeEnum {
-    dividend,
-    DIVADJ,
-    journal,
-    option,
+pub enum EventTypeEnum {
     trade,
+    option,
+    ach,
+    wire,
+    dividend,
+    fee,
+    tax,
+    journal,
+    check,
+    transfer,
+    adjustment,
+    interest,
+    DIVADJ,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -113,7 +121,7 @@ enum EventType {
     Dividend(DividendEvent),
     DivAdj(DivAdjEvent),
     Journal(JournalEvent),
-    Option(OptionEvent),
+    TradierOption(OptionEvent),
     Trade(TradeEvent),
 }
 
@@ -157,7 +165,15 @@ impl From<HistoryEnum> for HistoryRoot {
     }
 }
 
-pub async fn get_history(account_id: String) -> Result<HistoryRoot> {
+pub async fn get_history(
+    account_id: String,
+    page: Option<u64>,
+    limit: Option<u64>,
+    activity_type: Option<EventTypeEnum>,
+    start: Option<DateTime<Utc>>,
+    end: Option<DateTime<Utc>>,
+    symbol: String,
+) -> Result<HistoryRoot> {
     let response: HistoryEnum = build_request(&format!("accounts/{}/history", account_id))
         .send()
         .await?
