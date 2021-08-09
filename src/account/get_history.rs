@@ -4,7 +4,7 @@ use chrono::{DateTime, Utc};
 use eyre::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::build_request;
+use crate::build_request_get;
 
 #[derive(Debug, Serialize, Deserialize)]
 enum TradeType {
@@ -165,6 +165,16 @@ impl From<HistoryEnum> for HistoryRoot {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct Query {
+    page: Option<u64>,
+    limit: Option<u64>,
+    activity_type: Option<EventTypeEnum>,
+    start: Option<DateTime<Utc>>,
+    end: Option<DateTime<Utc>>,
+    symbol: Option<String>,
+}
+
 pub async fn get_history(
     account_id: String,
     page: Option<u64>,
@@ -172,13 +182,26 @@ pub async fn get_history(
     activity_type: Option<EventTypeEnum>,
     start: Option<DateTime<Utc>>,
     end: Option<DateTime<Utc>>,
-    symbol: String,
+    symbol: Option<String>,
 ) -> Result<HistoryRoot> {
-    let response: HistoryEnum = build_request(&format!("accounts/{}/history", account_id))
-        .send()
-        .await?
-        .json()
-        .await?;
+    let query = Query {
+        page,
+        limit,
+        activity_type,
+        start,
+        end,
+        symbol,
+    };
+
+    let response: HistoryEnum = build_request_get(
+        &format!("accounts/{}/history", account_id),
+        None::<()>,
+        Some(query),
+    )
+    .send()
+    .await?
+    .json()
+    .await?;
 
     Ok(response.into())
 }
@@ -196,7 +219,7 @@ mod tests {
             .with_body(include_str!("test_requests/get_history.json"))
             .create();
 
-        let response = get_history("VA000000".into()).await;
+        let response = get_history("VA000000".into(), None, None, None, None, None, None).await;
         assert!(response.is_ok());
     }
 
@@ -207,7 +230,7 @@ mod tests {
             .with_body(include_str!("test_requests/get_history_single.json"))
             .create();
 
-        let response = get_history("VA000000".into()).await;
+        let response = get_history("VA000000".into(), None, None, None, None, None, None).await;
         assert!(response.is_ok());
     }
 }

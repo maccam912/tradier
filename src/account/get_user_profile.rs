@@ -4,7 +4,7 @@ use chrono::{DateTime, Utc};
 use eyre::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::build_request;
+use crate::build_request_get;
 
 #[derive(Debug, Serialize, Deserialize)]
 enum Classification {
@@ -89,7 +89,11 @@ impl From<ProfileEnum> for UserProfile {
 }
 
 pub async fn get_user_profile() -> Result<UserProfile> {
-    let response: ProfileEnum = build_request("user/profile").send().await?.json().await?;
+    let response: ProfileEnum = build_request_get("user/profile", None::<()>, None::<()>)
+        .send()
+        .await?
+        .json()
+        .await?;
 
     Ok(response.into())
 }

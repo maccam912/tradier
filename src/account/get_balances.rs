@@ -3,7 +3,7 @@
 use eyre::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::build_request;
+use crate::build_request_get;
 
 #[derive(Debug, Serialize, Deserialize)]
 enum Type {
@@ -68,11 +68,15 @@ pub struct BalancesRoot {
 }
 
 pub async fn get_balances(account_id: String) -> Result<BalancesRoot> {
-    let response: BalancesRoot = build_request(&format!("accounts/{}/balances", account_id))
-        .send()
-        .await?
-        .json()
-        .await?;
+    let response: BalancesRoot = build_request_get(
+        &format!("accounts/{}/balances", account_id),
+        None::<()>,
+        None::<()>,
+    )
+    .send()
+    .await?
+    .json()
+    .await?;
 
     Ok(response)
 }

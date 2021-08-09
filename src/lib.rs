@@ -3,6 +3,7 @@ use mockito;
 
 use once_cell::sync::Lazy;
 use reqwest::RequestBuilder;
+use serde::Serialize;
 
 const VERSION: &str = "v1";
 
@@ -27,11 +28,18 @@ fn endpoint(path: &str) -> String {
     format!("{}/{}/{}", endpoint, VERSION, path)
 }
 
-fn build_request(path: &str) -> RequestBuilder {
+fn build_request_get(
+    path: &str,
+    _body: Option<impl Serialize>,
+    query: Option<impl Serialize>,
+) -> RequestBuilder {
     let token: &str = &TOKEN;
     let mut request = CLIENT.get(endpoint(path));
     request = request.header("Accept", "application/json");
     request = request.header("Authorization", format!("Bearer {}", token));
+    if query.is_some() {
+        request = request.query(&query);
+    }
     request
 }
 

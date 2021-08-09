@@ -4,7 +4,7 @@ use chrono::{DateTime, Utc};
 use eyre::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::build_request;
+use crate::build_request_get;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Position {
@@ -56,11 +56,15 @@ impl From<PositionsEnum> for PositionsRoot {
 }
 
 pub async fn get_positions(account_id: String) -> Result<PositionsRoot> {
-    let response: PositionsEnum = build_request(&format!("accounts/{}/positions", account_id))
-        .send()
-        .await?
-        .json()
-        .await?;
+    let response: PositionsEnum = build_request_get(
+        &format!("accounts/{}/positions", account_id),
+        None::<()>,
+        None::<()>,
+    )
+    .send()
+    .await?
+    .json()
+    .await?;
 
     Ok(response.into())
 }
