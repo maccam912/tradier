@@ -6,65 +6,65 @@ use serde::{Deserialize, Serialize};
 use crate::build_request_get;
 
 #[derive(Debug, Serialize, Deserialize)]
-enum Type {
+pub enum Type {
     cash,
     margin,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Margin {
-    fed_call: f64,
-    maintenance_call: f64,
-    option_buying_power: f64,
-    stock_buying_power: f64,
-    stock_short_value: f64,
-    sweep: f64,
+pub struct Margin {
+    pub fed_call: f64,
+    pub maintenance_call: f64,
+    pub option_buying_power: f64,
+    pub stock_buying_power: f64,
+    pub stock_short_value: f64,
+    pub sweep: f64,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Cash {
-    cash_available: f64,
-    sweep: f64,
-    unsettled_funds: f64,
+pub struct Cash {
+    pub cash_available: f64,
+    pub sweep: f64,
+    pub unsettled_funds: f64,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Pdt {
-    fed_call: f64,
-    maintenance_call: f64,
-    option_buying_power: f64,
-    stock_buying_power: f64,
-    stock_short_value: f64,
+pub struct Pdt {
+    pub fed_call: f64,
+    pub maintenance_call: f64,
+    pub option_buying_power: f64,
+    pub stock_buying_power: f64,
+    pub stock_short_value: f64,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Balances {
-    option_short_value: f64,
-    total_equity: f64,
-    account_number: String,
-    account_type: Type,
-    close_pl: f64,
-    current_requirement: f64,
-    equity: f64,
-    long_market_value: f64,
-    market_value: f64,
-    open_pl: f64,
-    option_long_value: f64,
-    option_requirement: f64,
-    pending_orders_count: u64,
-    short_market_value: f64,
-    stock_long_value: f64,
-    total_cash: f64,
-    uncleared_funds: f64,
-    pending_cash: f64,
-    margin: Margin,
-    cash: Cash,
-    pdt: Pdt,
+pub struct Balances {
+    pub option_short_value: f64,
+    pub total_equity: f64,
+    pub account_number: String,
+    pub account_type: Type,
+    pub close_pl: f64,
+    pub current_requirement: f64,
+    pub equity: f64,
+    pub long_market_value: f64,
+    pub market_value: f64,
+    pub open_pl: f64,
+    pub option_long_value: f64,
+    pub option_requirement: f64,
+    pub pending_orders_count: u64,
+    pub short_market_value: f64,
+    pub stock_long_value: f64,
+    pub total_cash: f64,
+    pub uncleared_funds: f64,
+    pub pending_cash: f64,
+    pub margin: Margin,
+    pub cash: Cash,
+    pub pdt: Pdt,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BalancesRoot {
-    balances: Balances,
+    pub balances: Balances,
 }
 
 pub async fn get_balances(account_id: String) -> Result<BalancesRoot> {
