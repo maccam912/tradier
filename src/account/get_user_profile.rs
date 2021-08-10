@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::build_request_get;
 
 #[derive(Debug, Serialize, Deserialize)]
-enum Classification {
+pub enum Classification {
     individual,
     entity,
     joint_survivor,
@@ -18,35 +18,35 @@ enum Classification {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-enum Status {
+pub enum Status {
     active,
     closed,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-enum Type {
+pub enum Type {
     cash,
     margin,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Account {
-    account_number: String,
-    classification: Classification,
-    date_created: DateTime<Utc>,
-    day_trader: bool,
-    option_level: u8,
-    status: Status,
+pub struct Account {
+    pub account_number: String,
+    pub classification: Classification,
+    pub date_created: DateTime<Utc>,
+    pub day_trader: bool,
+    pub option_level: u8,
+    pub status: Status,
     #[serde(alias = "type")]
-    account_type: Type,
-    last_update_date: DateTime<Utc>,
+    pub account_type: Type,
+    pub last_update_date: DateTime<Utc>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Profile {
-    id: String,
-    name: String,
-    account: Vec<Account>,
+pub struct Profile {
+    pub id: String,
+    pub name: String,
+    pub account: Vec<Account>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -58,7 +58,7 @@ struct SingleProfile {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct UserProfile {
-    profile: Profile,
+    pub profile: Profile,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
