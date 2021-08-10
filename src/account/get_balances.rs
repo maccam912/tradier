@@ -9,6 +9,7 @@ use crate::build_request_get;
 pub enum Type {
     cash,
     margin,
+    pdt,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -57,9 +58,9 @@ pub struct Balances {
     pub total_cash: f64,
     pub uncleared_funds: f64,
     pub pending_cash: f64,
-    pub margin: Margin,
-    pub cash: Cash,
-    pub pdt: Pdt,
+    pub margin: Option<Margin>,
+    pub cash: Option<Cash>,
+    pub pdt: Option<Pdt>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
