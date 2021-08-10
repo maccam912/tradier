@@ -67,16 +67,14 @@ pub struct BalancesRoot {
     pub balances: Balances,
 }
 
-pub async fn get_balances(account_id: String) -> Result<BalancesRoot> {
+pub fn get_balances(account_id: String) -> Result<BalancesRoot> {
     let response: BalancesRoot = build_request_get(
         &format!("accounts/{}/balances", account_id),
         None::<()>,
         None::<()>,
     )
-    .send()
-    .await?
-    .json()
-    .await?;
+    .send()?
+    .json()?;
 
     Ok(response)
 }
@@ -87,15 +85,14 @@ mod tests {
 
     use crate::account::get_balances::get_balances;
 
-    #[tokio::test]
-    async fn test_get_user_profile() {
+    fn test_get_user_profile() {
         let _m = mock("GET", "/v1/accounts/VA000000/balances")
             .with_status(200)
             .with_body(include_str!("test_requests/get_balances.json"))
             .create();
 
-        get_balances("VA000000".into()).await.unwrap();
-        let response = get_balances("VA000000".into()).await;
+        get_balances("VA000000".into()).unwrap();
+        let response = get_balances("VA000000".into());
         assert!(response.is_ok());
     }
 }

@@ -88,12 +88,10 @@ impl From<ProfileEnum> for UserProfile {
     }
 }
 
-pub async fn get_user_profile() -> Result<UserProfile> {
+pub fn get_user_profile() -> Result<UserProfile> {
     let response: ProfileEnum = build_request_get("user/profile", None::<()>, None::<()>)
-        .send()
-        .await?
-        .json()
-        .await?;
+        .send()?
+        .json()?;
 
     Ok(response.into())
 }
@@ -104,25 +102,23 @@ mod tests {
 
     use crate::account::get_user_profile::get_user_profile;
 
-    #[tokio::test]
-    async fn test_get_user_profile() {
+    fn test_get_user_profile() {
         let _m = mock("GET", "/v1/user/profile")
             .with_status(200)
             .with_body(include_str!("test_requests/get_user_profile.json"))
             .create();
 
-        let response = get_user_profile().await;
+        let response = get_user_profile();
         assert!(response.is_ok());
     }
 
-    #[tokio::test]
-    async fn test_get_user_profile_single() {
+    fn test_get_user_profile_single() {
         let _m = mock("GET", "/v1/user/profile")
             .with_status(200)
             .with_body(include_str!("test_requests/get_user_profile_single.json"))
             .create();
 
-        let response = get_user_profile().await;
+        let response = get_user_profile();
         assert!(response.is_ok());
     }
 }
