@@ -102,6 +102,7 @@ mod tests {
 
     use crate::account::get_user_profile::get_user_profile;
 
+    #[test]
     fn test_get_user_profile() {
         let _m = mock("GET", "/v1/user/profile")
             .with_status(200)
@@ -112,6 +113,7 @@ mod tests {
         assert!(response.is_ok());
     }
 
+    #[test]
     fn test_get_user_profile_single() {
         let _m = mock("GET", "/v1/user/profile")
             .with_status(200)

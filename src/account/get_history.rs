@@ -210,6 +210,7 @@ mod tests {
 
     use crate::account::get_history::get_history;
 
+    #[test]
     fn test_get_history() {
         let _m = mock("GET", "/v1/accounts/VA000000/history")
             .with_status(200)
@@ -220,6 +221,7 @@ mod tests {
         assert!(response.is_ok());
     }
 
+    #[test]
     fn test_get_history_single() {
         let _m = mock("GET", "/v1/accounts/VA000000/history")
             .with_status(200)

@@ -73,6 +73,7 @@ mod tests {
 
     use crate::account::get_positions::get_positions;
 
+    #[test]
     fn test_get_positions() {
         let _m = mock("GET", "/v1/accounts/VA000000/positions")
             .with_status(200)
@@ -83,6 +84,7 @@ mod tests {
         assert!(response.is_ok());
     }
 
+    #[test]
     fn test_get_positions_single() {
         let _m = mock("GET", "/v1/accounts/VA000000/positions")
             .with_status(200)

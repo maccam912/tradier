@@ -85,6 +85,7 @@ mod tests {
 
     use crate::account::get_balances::get_balances;
 
+    #[test]
     fn test_get_user_profile() {
         let _m = mock("GET", "/v1/accounts/VA000000/balances")
             .with_status(200)
