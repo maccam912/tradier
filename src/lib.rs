@@ -2,12 +2,12 @@
 use mockito;
 
 use once_cell::sync::Lazy;
-use reqwest::RequestBuilder;
+use reqwest::blocking::RequestBuilder;
 use serde::Serialize;
 
 const VERSION: &str = "v1";
 
-static CLIENT: Lazy<reqwest::Client> = Lazy::new(reqwest::Client::new);
+static CLIENT: Lazy<reqwest::blocking::Client> = Lazy::new(reqwest::blocking::Client::new);
 
 static CONFIG: Lazy<config::Config> = Lazy::new(|| {
     config::Config::default()

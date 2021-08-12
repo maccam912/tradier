@@ -55,16 +55,14 @@ impl From<PositionsEnum> for PositionsRoot {
     }
 }
 
-pub async fn get_positions(account_id: String) -> Result<PositionsRoot> {
+pub fn get_positions(account_id: String) -> Result<PositionsRoot> {
     let response: PositionsEnum = build_request_get(
         &format!("accounts/{}/positions", account_id),
         None::<()>,
         None::<()>,
     )
-    .send()
-    .await?
-    .json()
-    .await?;
+    .send()?
+    .json()?;
 
     Ok(response.into())
 }
@@ -75,26 +73,26 @@ mod tests {
 
     use crate::account::get_positions::get_positions;
 
-    #[tokio::test]
-    async fn test_get_positions() {
+    #[test]
+    fn test_get_positions() {
         let _m = mock("GET", "/v1/accounts/VA000000/positions")
             .with_status(200)
             .with_body(include_str!("test_requests/get_positions.json"))
             .create();
 
-        let response = get_positions("VA000000".into()).await;
+        let response = get_positions("VA000000".into());
         assert!(response.is_ok());
     }
 
-    #[tokio::test]
-    async fn test_get_positions_single() {
+    #[test]
+    fn test_get_positions_single() {
         let _m = mock("GET", "/v1/accounts/VA000000/positions")
             .with_status(200)
             .with_body(include_str!("test_requests/get_positions_single.json"))
             .create();
 
-        get_positions("VA000000".into()).await.unwrap();
-        let response = get_positions("VA000000".into()).await;
+        get_positions("VA000000".into()).unwrap();
+        let response = get_positions("VA000000".into());
         assert!(response.is_ok());
     }
 }

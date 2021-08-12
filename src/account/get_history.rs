@@ -175,7 +175,7 @@ struct Query {
     symbol: Option<String>,
 }
 
-pub async fn get_history(
+pub fn get_history(
     account_id: String,
     page: Option<u64>,
     limit: Option<u64>,
@@ -198,10 +198,8 @@ pub async fn get_history(
         None::<()>,
         Some(query),
     )
-    .send()
-    .await?
-    .json()
-    .await?;
+    .send()?
+    .json()?;
 
     Ok(response.into())
 }
@@ -212,25 +210,25 @@ mod tests {
 
     use crate::account::get_history::get_history;
 
-    #[tokio::test]
-    async fn test_get_history() {
+    #[test]
+    fn test_get_history() {
         let _m = mock("GET", "/v1/accounts/VA000000/history")
             .with_status(200)
             .with_body(include_str!("test_requests/get_history.json"))
             .create();
 
-        let response = get_history("VA000000".into(), None, None, None, None, None, None).await;
+        let response = get_history("VA000000".into(), None, None, None, None, None, None);
         assert!(response.is_ok());
     }
 
-    #[tokio::test]
-    async fn test_get_history_single() {
+    #[test]
+    fn test_get_history_single() {
         let _m = mock("GET", "/v1/accounts/VA000000/history")
             .with_status(200)
             .with_body(include_str!("test_requests/get_history_single.json"))
             .create();
 
-        let response = get_history("VA000000".into(), None, None, None, None, None, None).await;
+        let response = get_history("VA000000".into(), None, None, None, None, None, None);
         assert!(response.is_ok());
     }
 }
