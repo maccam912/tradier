@@ -118,15 +118,8 @@ pub fn get_time_and_sales(
         session_filter,
     };
 
-    println!(
-        "{:?}",
-        build_request_get("markets/timesales", None::<()>, Some(query))
-            .send()?
-            .text()?
-    );
-
     let response: NaiveHistorySeries =
-        build_request_get("markets/timesales", None::<()>, None::<()>)
+        build_request_get("markets/timesales", None::<()>, Some(query))
             .send()?
             .json()?;
 
@@ -141,14 +134,12 @@ mod tests {
 
     #[test]
     fn test_get_time_and_sales() {
-        let _m = mock("GET", "/v1/markets/timesales")
+        let _m = mock("GET", "/v1/markets/timesales?symbol=AAPL&interval=1min")
             .with_status(200)
             .with_body(include_str!("test_requests/get_time_and_sales.json"))
             .create();
 
-        get_time_and_sales("AAPL".into(), Some("1min".into()), None, None, None).unwrap();
         let response = get_time_and_sales("AAPL".into(), Some("1min".into()), None, None, None);
         assert!(response.is_ok());
-        assert!(false);
     }
 }

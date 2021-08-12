@@ -5,6 +5,9 @@ use once_cell::sync::Lazy;
 use reqwest::blocking::RequestBuilder;
 use serde::Serialize;
 
+pub mod account;
+pub mod market_data;
+
 const VERSION: &str = "v1";
 
 static CLIENT: Lazy<reqwest::blocking::Client> = Lazy::new(reqwest::blocking::Client::new);
@@ -37,11 +40,8 @@ fn build_request_get(
     let mut request = CLIENT.get(endpoint(path));
     request = request.header("Accept", "application/json");
     request = request.header("Authorization", format!("Bearer {}", token));
-    if query.is_some() {
-        request = request.query(&query);
+    if let Some(q) = query {
+        request = request.query(&q);
     }
     request
 }
-
-pub mod account;
-pub mod market_data;
