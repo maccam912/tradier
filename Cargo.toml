@@ -7,6 +7,7 @@ edition = "2018"
 
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
+chrono-tz = "0.5.3"
 config = "0.11"
 eyre = "0.6"
 mockito = "0.30"
