@@ -44,3 +44,4 @@ fn build_request_get(
 }
 
 pub mod account;
+pub mod market_data;
