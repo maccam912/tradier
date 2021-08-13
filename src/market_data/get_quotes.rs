@@ -21,7 +21,7 @@ enum OptionType {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Quote {
+pub struct Quote {
     symbol: String,
     description: String,
     exch: String,
@@ -60,13 +60,13 @@ struct Quote {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Quotes {
-    quote: Vec<Quote>,
+pub struct Quotes {
+    pub quote: Vec<Quote>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct GetQuotes {
-    quotes: Quotes,
+    pub quotes: Quotes,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
