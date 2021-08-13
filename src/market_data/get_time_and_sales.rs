@@ -21,16 +21,16 @@ struct NaiveData {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Data {
-    time: DateTime<Utc>,
-    timestamp: i64,
-    price: f64,
-    open: f64,
-    high: f64,
-    low: f64,
-    close: f64,
-    volume: i64,
-    vwap: f64,
+pub struct Data {
+    pub time: DateTime<Utc>,
+    pub timestamp: i64,
+    pub price: f64,
+    pub open: f64,
+    pub high: f64,
+    pub low: f64,
+    pub close: f64,
+    pub volume: i64,
+    pub vwap: f64,
 }
 
 impl From<NaiveData> for Data {
@@ -56,8 +56,8 @@ struct NaiveSeries {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Series {
-    data: Vec<Data>,
+pub struct Series {
+    pub data: Vec<Data>,
 }
 
 impl From<NaiveSeries> for Series {
@@ -74,7 +74,7 @@ pub struct NaiveHistorySeries {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct HistorySeries {
-    series: Series,
+    pub series: Series,
 }
 
 impl From<NaiveHistorySeries> for HistorySeries {

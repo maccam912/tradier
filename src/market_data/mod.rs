@@ -1,5 +1,5 @@
-mod get_time_and_sales;
+pub mod get_time_and_sales;
 pub use get_time_and_sales::get_time_and_sales;
 
-pub mod get_quotes;
+mod get_quotes;
 pub use get_quotes::get_quotes;
