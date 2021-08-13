@@ -95,8 +95,8 @@ pub enum SessionFilter {
 struct Query {
     symbol: String,
     interval: Option<String>,
-    start: Option<NaiveDateTime>,
-    end: Option<NaiveDateTime>,
+    start: Option<String>,
+    end: Option<String>,
     session_filter: Option<SessionFilter>,
 }
 
@@ -110,23 +110,25 @@ pub fn get_time_and_sales(
     let start = start_utc.map(|dt| dt.with_timezone(&New_York).naive_local());
     let end = end_utc.map(|dt| dt.with_timezone(&New_York).naive_local());
 
+    let start_str = start.map(|dt| dt.format("%Y-%m-%d %H:%M").to_string());
+    let end_str = end.map(|dt| dt.format("%Y-%m-%d %H:%M").to_string());
+
     let query = Query {
         symbol,
         interval,
-        start,
-        end,
+        start: start_str,
+        end: end_str,
         session_filter,
     };
 
-    let response: Result<NaiveHistorySeries, reqwest::Error> =
-        build_request_get("markets/timesales", None::<()>, Some(query.clone()))
-            .send()?
-            .json();
+    let request = build_request_get("markets/timesales", None::<()>, Some(query.clone()));
+    println!("{:?}", request);
+    let response: Result<NaiveHistorySeries, reqwest::Error> = request.send()?.json();
 
     match response {
         Ok(resp) => Ok(resp.into()),
         Err(_) => {
-            let err = build_request_get("markets/timesales", None::<()>, Some(query.clone()))
+            let err = build_request_get("markets/timesales", None::<()>, Some(query))
                 .send()?
                 .text()?;
             Err(eyre!("{:?}", err))
@@ -142,12 +144,30 @@ mod tests {
 
     #[test]
     fn test_get_time_and_sales() {
-        let _m = mock("GET", "/v1/markets/timesales?symbol=AAPL&interval=1min")
+        let _m = mock("GET", "/v1/markets/timesales?symbol=AAPL&interval=1min&start=2021-08-12+20%3A00&end=2021-08-13+20%3A00")
             .with_status(200)
             .with_body(include_str!("test_requests/get_time_and_sales.json"))
             .create();
 
-        let response = get_time_and_sales("AAPL".into(), Some("1min".into()), None, None, None);
+        let start = chrono::DateTime::parse_from_str(
+            "2021 Aug 13 00:00:00 +0000",
+            "%Y %b %d %H:%M:%S%.3f %z",
+        )
+        .unwrap()
+        .with_timezone(&chrono::Utc);
+        let end = chrono::DateTime::parse_from_str(
+            "2021 Aug 14 00:00:00 +0000",
+            "%Y %b %d %H:%M:%S%.3f %z",
+        )
+        .unwrap()
+        .with_timezone(&chrono::Utc);
+        let response = get_time_and_sales(
+            "AAPL".into(),
+            Some("1min".into()),
+            Some(start),
+            Some(end),
+            None,
+        );
         assert!(response.is_ok());
     }
 }
