@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use crate::build_request_get;
 
 #[derive(Debug, Serialize, Deserialize)]
-enum QuoteType {
+pub enum QuoteType {
     stock,
     option,
     etf,
@@ -15,48 +15,48 @@ enum QuoteType {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-enum OptionType {
+pub enum OptionType {
     put,
     call,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Quote {
-    symbol: String,
-    description: String,
-    exch: String,
+    pub symbol: String,
+    pub description: String,
+    pub exch: String,
     #[serde(alias = "type")]
-    quote_type: QuoteType,
-    last: Option<f64>,
-    change: Option<f64>,
-    volume: i64,
-    open: Option<f64>,
-    high: Option<f64>,
-    low: Option<f64>,
-    close: Option<f64>,
-    bid: f64,
-    ask: f64,
-    underlying: Option<String>,
-    change_percentage: Option<f64>,
-    average_volume: i64,
-    last_volume: i64,
-    trade_date: i64,
-    prevclose: Option<f64>,
-    week_52_high: f64,
-    week_52_low: f64,
-    bidsize: i64,
-    bidexch: String,
-    bid_date: i64,
-    asksize: i64,
-    askexch: String,
-    ask_date: i64,
-    open_interest: Option<i64>,
-    contract_size: Option<i64>,
-    expiration_date: Option<NaiveDate>,
-    expiration_type: Option<String>,
-    option_type: Option<OptionType>,
-    root_symbols: Option<String>,
-    root_symbol: Option<String>,
+    pub quote_type: QuoteType,
+    pub last: Option<f64>,
+    pub change: Option<f64>,
+    pub volume: i64,
+    pub open: Option<f64>,
+    pub high: Option<f64>,
+    pub low: Option<f64>,
+    pub close: Option<f64>,
+    pub bid: f64,
+    pub ask: f64,
+    pub underlying: Option<String>,
+    pub change_percentage: Option<f64>,
+    pub average_volume: i64,
+    pub last_volume: i64,
+    pub trade_date: i64,
+    pub prevclose: Option<f64>,
+    pub week_52_high: f64,
+    pub week_52_low: f64,
+    pub bidsize: i64,
+    pub bidexch: String,
+    pub bid_date: i64,
+    pub asksize: i64,
+    pub askexch: String,
+    pub ask_date: i64,
+    pub open_interest: Option<i64>,
+    pub contract_size: Option<i64>,
+    pub expiration_date: Option<NaiveDate>,
+    pub expiration_type: Option<String>,
+    pub option_type: Option<OptionType>,
+    pub root_symbols: Option<String>,
+    pub root_symbol: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
