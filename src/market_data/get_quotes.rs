@@ -69,28 +69,22 @@ pub struct GetQuotes {
     quotes: Quotes,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 struct Query {
-    symbols: Vec<String>,
     greeks: bool,
 }
 
 pub fn get_quotes(symbols: Vec<String>, greeks: Option<bool>) -> Result<GetQuotes> {
     let query = Query {
-        symbols,
         greeks: greeks.unwrap_or(false),
     };
 
-    println!(
-        "{:?}",
-        build_request_get("markets/quotes", None::<()>, Some(query))
-            .send()?
-            .text()?
+    let request = build_request_get(
+        &format!("markets/quotes?{}", symbols.join(",")),
+        None::<()>,
+        Some(query),
     );
-
-    let response: GetQuotes = build_request_get("markets/quotes", None::<()>, None::<()>)
-        .send()?
-        .json()?;
+    let response: GetQuotes = request.send()?.json()?;
 
     Ok(response)
 }
@@ -105,14 +99,13 @@ mod tests {
     fn test_get_quotes() {
         let _m = mock(
             "GET",
-            "/v1/markets/quotes?symbol=AAPL,VXX190517P00016000&greeks=false",
+            "/v1/markets/quotes?AAPL,VXX190517P00016000&greeks=false",
         )
         .with_status(200)
         .with_body(include_str!("test_requests/get_quotes.json"))
         .create();
 
         let response = get_quotes(vec!["AAPL".into(), "VXX190517P00016000".into()], None);
-        println!("{:?}", response);
         assert!(response.is_ok());
     }
 }

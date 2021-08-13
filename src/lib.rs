@@ -5,9 +5,6 @@ use once_cell::sync::Lazy;
 use reqwest::blocking::RequestBuilder;
 use serde::Serialize;
 
-pub mod account;
-pub mod market_data;
-
 const VERSION: &str = "v1";
 
 static CLIENT: Lazy<reqwest::blocking::Client> = Lazy::new(reqwest::blocking::Client::new);
@@ -45,3 +42,6 @@ fn build_request_get(
     }
     request
 }
+
+pub mod account;
+pub mod market_data;
