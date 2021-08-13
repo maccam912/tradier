@@ -2,7 +2,7 @@
 
 use chrono::{DateTime, NaiveDateTime, TimeZone, Utc};
 use chrono_tz::America::New_York;
-use eyre::Result;
+use eyre::{eyre, Result};
 use serde::{Deserialize, Serialize};
 
 use crate::build_request_get;
@@ -85,13 +85,13 @@ impl From<NaiveHistorySeries> for HistorySeries {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum SessionFilter {
     all,
     open,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 struct Query {
     symbol: String,
     interval: Option<String>,
@@ -118,12 +118,20 @@ pub fn get_time_and_sales(
         session_filter,
     };
 
-    let response: NaiveHistorySeries =
-        build_request_get("markets/timesales", None::<()>, Some(query))
+    let response: Result<NaiveHistorySeries, reqwest::Error> =
+        build_request_get("markets/timesales", None::<()>, Some(query.clone()))
             .send()?
-            .json()?;
+            .json();
 
-    Ok(response.into())
+    match response {
+        Ok(resp) => Ok(resp.into()),
+        Err(_) => {
+            let err = build_request_get("markets/timesales", None::<()>, Some(query.clone()))
+                .send()?
+                .text()?;
+            Err(eyre!("{:?}", err))
+        }
+    }
 }
 
 #[cfg(test)]
