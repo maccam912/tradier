@@ -122,8 +122,9 @@ pub fn get_time_and_sales(
     };
 
     let request = build_request_get("markets/timesales", None::<()>, Some(query.clone()));
-    println!("{:?}", request);
+    log::warn!("Request: {:?}", request);
     let response: Result<NaiveHistorySeries, reqwest::Error> = request.send()?.json();
+    log::warn!("Response: {:?}", response);
 
     match response {
         Ok(resp) => Ok(resp.into()),
