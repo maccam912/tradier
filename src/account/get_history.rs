@@ -4,7 +4,7 @@ use chrono::{DateTime, Utc};
 use eyre::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::build_request_get;
+use crate::{build_request_get, TradierConfig};
 
 #[derive(Debug, Serialize, Deserialize)]
 enum TradeType {
@@ -175,7 +175,9 @@ struct Query {
     symbol: Option<String>,
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn get_history(
+    config: &TradierConfig,
     account_id: String,
     page: Option<u64>,
     limit: Option<u64>,
@@ -194,6 +196,7 @@ pub fn get_history(
     };
 
     let response: HistoryEnum = build_request_get(
+        config,
         &format!("accounts/{}/history", account_id),
         None::<()>,
         Some(query),
@@ -208,7 +211,7 @@ pub fn get_history(
 mod tests {
     use mockito::mock;
 
-    use crate::account::get_history::get_history;
+    use crate::{account::get_history::get_history, TradierConfig};
 
     #[test]
     fn test_get_history() {
@@ -217,7 +220,21 @@ mod tests {
             .with_body(include_str!("test_requests/get_history.json"))
             .create();
 
-        let response = get_history("VA000000".into(), None, None, None, None, None, None);
+        let config = TradierConfig {
+            token: "xxx".into(),
+            endpoint: mockito::server_url(),
+        };
+
+        let response = get_history(
+            &config,
+            "VA000000".into(),
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        );
         assert!(response.is_ok());
     }
 
@@ -228,7 +245,21 @@ mod tests {
             .with_body(include_str!("test_requests/get_history_single.json"))
             .create();
 
-        let response = get_history("VA000000".into(), None, None, None, None, None, None);
+        let config = TradierConfig {
+            token: "xxx".into(),
+            endpoint: mockito::server_url(),
+        };
+
+        let response = get_history(
+            &config,
+            "VA000000".into(),
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        );
         assert!(response.is_ok());
     }
 }

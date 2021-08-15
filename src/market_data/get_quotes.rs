@@ -3,7 +3,7 @@ use chrono::NaiveDate;
 use eyre::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::build_request_get;
+use crate::{build_request_get, TradierConfig};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum QuoteType {
@@ -74,12 +74,17 @@ struct Query {
     greeks: bool,
 }
 
-pub fn get_quotes(symbols: Vec<String>, greeks: Option<bool>) -> Result<GetQuotes> {
+pub fn get_quotes(
+    config: &TradierConfig,
+    symbols: Vec<String>,
+    greeks: Option<bool>,
+) -> Result<GetQuotes> {
     let query = Query {
         greeks: greeks.unwrap_or(false),
     };
 
     let request = build_request_get(
+        config,
         &format!("markets/quotes?{}", symbols.join(",")),
         None::<()>,
         Some(query),
@@ -93,7 +98,7 @@ pub fn get_quotes(symbols: Vec<String>, greeks: Option<bool>) -> Result<GetQuote
 mod tests {
     use mockito::mock;
 
-    use crate::market_data::get_quotes::get_quotes;
+    use crate::{market_data::get_quotes::get_quotes, TradierConfig};
 
     #[test]
     fn test_get_quotes() {
@@ -105,7 +110,16 @@ mod tests {
         .with_body(include_str!("test_requests/get_quotes.json"))
         .create();
 
-        let response = get_quotes(vec!["AAPL".into(), "VXX190517P00016000".into()], None);
+        let config = TradierConfig {
+            token: "xxx".into(),
+            endpoint: mockito::server_url(),
+        };
+
+        let response = get_quotes(
+            &config,
+            vec!["AAPL".into(), "VXX190517P00016000".into()],
+            None,
+        );
         assert!(response.is_ok());
     }
 }

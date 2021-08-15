@@ -4,7 +4,7 @@ use chrono::{DateTime, Utc};
 use eyre::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::build_request_get;
+use crate::{build_request_get, TradierConfig};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum Classification {
@@ -88,8 +88,8 @@ impl From<ProfileEnum> for UserProfile {
     }
 }
 
-pub fn get_user_profile() -> Result<UserProfile> {
-    let response: ProfileEnum = build_request_get("user/profile", None::<()>, None::<()>)
+pub fn get_user_profile(config: &TradierConfig) -> Result<UserProfile> {
+    let response: ProfileEnum = build_request_get(config, "user/profile", None::<()>, None::<()>)
         .send()?
         .json()?;
 
@@ -100,7 +100,7 @@ pub fn get_user_profile() -> Result<UserProfile> {
 mod tests {
     use mockito::mock;
 
-    use crate::account::get_user_profile::get_user_profile;
+    use crate::{account::get_user_profile::get_user_profile, TradierConfig};
 
     #[test]
     fn test_get_user_profile() {
@@ -109,7 +109,12 @@ mod tests {
             .with_body(include_str!("test_requests/get_user_profile.json"))
             .create();
 
-        let response = get_user_profile();
+        let config = TradierConfig {
+            token: "xxx".into(),
+            endpoint: mockito::server_url(),
+        };
+
+        let response = get_user_profile(&config);
         assert!(response.is_ok());
     }
 
@@ -120,7 +125,12 @@ mod tests {
             .with_body(include_str!("test_requests/get_user_profile_single.json"))
             .create();
 
-        let response = get_user_profile();
+        let config = TradierConfig {
+            token: "xxx".into(),
+            endpoint: mockito::server_url(),
+        };
+
+        let response = get_user_profile(&config);
         assert!(response.is_ok());
     }
 }

@@ -5,7 +5,7 @@ use chrono_tz::America::New_York;
 use eyre::{eyre, Result};
 use serde::{Deserialize, Serialize};
 
-use crate::build_request_get;
+use crate::{build_request_get, TradierConfig};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct NaiveData {
@@ -101,6 +101,7 @@ struct Query {
 }
 
 pub fn get_time_and_sales(
+    config: &TradierConfig,
     symbol: String,
     interval: Option<String>,
     start_utc: Option<DateTime<Utc>>,
@@ -121,7 +122,7 @@ pub fn get_time_and_sales(
         session_filter,
     };
 
-    let request = build_request_get("markets/timesales", None::<()>, Some(query.clone()));
+    let request = build_request_get(config, "markets/timesales", None::<()>, Some(query.clone()));
     log::debug!("Request: {:?}", request);
     let response: Result<NaiveHistorySeries, reqwest::Error> = request.send()?.json();
     log::debug!("Response: {:?}", response);
@@ -129,7 +130,7 @@ pub fn get_time_and_sales(
     match response {
         Ok(resp) => Ok(resp.into()),
         Err(_) => {
-            let err = build_request_get("markets/timesales", None::<()>, Some(query))
+            let err = build_request_get(config, "markets/timesales", None::<()>, Some(query))
                 .send()?
                 .text()?;
             Err(eyre!("{:?}", err))
@@ -141,7 +142,7 @@ pub fn get_time_and_sales(
 mod tests {
     use mockito::mock;
 
-    use crate::market_data::get_time_and_sales::get_time_and_sales;
+    use crate::{market_data::get_time_and_sales::get_time_and_sales, TradierConfig};
 
     #[test]
     fn test_get_time_and_sales() {
@@ -150,6 +151,10 @@ mod tests {
             .with_body(include_str!("test_requests/get_time_and_sales.json"))
             .create();
 
+        let config = TradierConfig {
+            token: "xxx".into(),
+            endpoint: mockito::server_url(),
+        };
         let start = chrono::DateTime::parse_from_str(
             "2021 Aug 13 00:00:00 +0000",
             "%Y %b %d %H:%M:%S%.3f %z",
@@ -163,6 +168,7 @@ mod tests {
         .unwrap()
         .with_timezone(&chrono::Utc);
         let response = get_time_and_sales(
+            &config,
             "AAPL".into(),
             Some("1min".into()),
             Some(start),

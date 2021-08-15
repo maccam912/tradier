@@ -3,7 +3,7 @@
 use eyre::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::build_request_get;
+use crate::{build_request_get, TradierConfig};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum Type {
@@ -68,8 +68,9 @@ pub struct BalancesRoot {
     pub balances: Balances,
 }
 
-pub fn get_balances(account_id: String) -> Result<BalancesRoot> {
+pub fn get_balances(config: &TradierConfig, account_id: String) -> Result<BalancesRoot> {
     let response: BalancesRoot = build_request_get(
+        config,
         &format!("accounts/{}/balances", account_id),
         None::<()>,
         None::<()>,
@@ -84,7 +85,7 @@ pub fn get_balances(account_id: String) -> Result<BalancesRoot> {
 mod tests {
     use mockito::mock;
 
-    use crate::account::get_balances::get_balances;
+    use crate::{account::get_balances::get_balances, TradierConfig};
 
     #[test]
     fn test_get_user_profile() {
@@ -93,8 +94,13 @@ mod tests {
             .with_body(include_str!("test_requests/get_balances.json"))
             .create();
 
-        get_balances("VA000000".into()).unwrap();
-        let response = get_balances("VA000000".into());
+        let config = TradierConfig {
+            token: "xxx".into(),
+            endpoint: mockito::server_url(),
+        };
+
+        get_balances(&config, "VA000000".into()).unwrap();
+        let response = get_balances(&config, "VA000000".into());
         assert!(response.is_ok());
     }
 }

@@ -4,7 +4,7 @@ use chrono::{DateTime, Utc};
 use eyre::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::build_request_get;
+use crate::{build_request_get, TradierConfig};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Position {
@@ -55,8 +55,9 @@ impl From<PositionsEnum> for PositionsRoot {
     }
 }
 
-pub fn get_positions(account_id: String) -> Result<PositionsRoot> {
+pub fn get_positions(config: &TradierConfig, account_id: String) -> Result<PositionsRoot> {
     let response: PositionsEnum = build_request_get(
+        config,
         &format!("accounts/{}/positions", account_id),
         None::<()>,
         None::<()>,
@@ -71,7 +72,7 @@ pub fn get_positions(account_id: String) -> Result<PositionsRoot> {
 mod tests {
     use mockito::mock;
 
-    use crate::account::get_positions::get_positions;
+    use crate::{account::get_positions::get_positions, TradierConfig};
 
     #[test]
     fn test_get_positions() {
@@ -80,7 +81,12 @@ mod tests {
             .with_body(include_str!("test_requests/get_positions.json"))
             .create();
 
-        let response = get_positions("VA000000".into());
+        let config = TradierConfig {
+            token: "xxx".into(),
+            endpoint: mockito::server_url(),
+        };
+
+        let response = get_positions(&config, "VA000000".into());
         assert!(response.is_ok());
     }
 
@@ -91,8 +97,13 @@ mod tests {
             .with_body(include_str!("test_requests/get_positions_single.json"))
             .create();
 
-        get_positions("VA000000".into()).unwrap();
-        let response = get_positions("VA000000".into());
+        let config = TradierConfig {
+            token: "xxx".into(),
+            endpoint: mockito::server_url(),
+        };
+
+        get_positions(&config, "VA000000".into()).unwrap();
+        let response = get_positions(&config, "VA000000".into());
         assert!(response.is_ok());
     }
 }
