@@ -12,7 +12,13 @@ pub enum Type {
     pdt,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+impl Default for Type {
+    fn default() -> Self {
+        Type::cash
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Margin {
     pub fed_call: f64,
     pub maintenance_call: f64,
@@ -22,14 +28,14 @@ pub struct Margin {
     pub sweep: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Cash {
     pub cash_available: f64,
     pub sweep: f64,
     pub unsettled_funds: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Pdt {
     pub fed_call: f64,
     pub maintenance_call: f64,
@@ -38,7 +44,7 @@ pub struct Pdt {
     pub stock_short_value: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Balances {
     pub option_short_value: f64,
     pub total_equity: f64,
@@ -63,7 +69,7 @@ pub struct Balances {
     pub pdt: Option<Pdt>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct BalancesRoot {
     pub balances: Balances,
 }
