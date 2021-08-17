@@ -5,14 +5,14 @@ use serde::{Deserialize, Serialize};
 
 use crate::{build_request_get, TradierConfig};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum Type {
     cash,
     margin,
     pdt,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Margin {
     pub fed_call: f64,
     pub maintenance_call: f64,
@@ -22,14 +22,14 @@ pub struct Margin {
     pub sweep: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Cash {
     pub cash_available: f64,
     pub sweep: f64,
     pub unsettled_funds: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Pdt {
     pub fed_call: f64,
     pub maintenance_call: f64,
@@ -38,7 +38,7 @@ pub struct Pdt {
     pub stock_short_value: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Balances {
     pub option_short_value: f64,
     pub total_equity: f64,
@@ -63,7 +63,7 @@ pub struct Balances {
     pub pdt: Option<Pdt>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct BalancesRoot {
     pub balances: Balances,
 }
