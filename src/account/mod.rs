@@ -1,5 +1,6 @@
 mod get_balances;
 pub use get_balances::get_balances;
+pub use get_balances::BalancesRoot;
 
 mod get_history;
 pub use get_history::get_history;
