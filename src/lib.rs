@@ -33,5 +33,22 @@ fn build_request_get(
     request
 }
 
+fn build_request_post(
+    config: &TradierConfig,
+    path: &str,
+    body: Option<impl Serialize>,
+    _query: Option<impl Serialize>,
+) -> RequestBuilder {
+    let token: &str = &config.token;
+    let mut request = CLIENT.post(endpoint(config, path));
+    request = request.header("Accept", "application/json");
+    request = request.header("Authorization", format!("Bearer {}", token));
+    if let Some(b) = body {
+        request = request.form(&b);
+    }
+    request
+}
+
 pub mod account;
 pub mod market_data;
+pub mod trading;

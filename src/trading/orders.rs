@@ -1,0 +1,141 @@
+#![allow(non_camel_case_types)]
+
+use eyre::Result;
+use serde::{Deserialize, Serialize};
+
+use crate::{build_request_post, TradierConfig};
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum Class {
+    equity,
+    option,
+    multileg,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum Side {
+    buy,
+    buy_to_cover,
+    sell,
+    sell_short,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum Type {
+    market,
+    limit,
+    stop,
+    stop_limit,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub enum Duration {
+    day,
+    gtc,
+    pre,
+    post,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Order {
+    pub id: u64,
+    pub status: String,
+    pub partner_id: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct OrderResponse {
+    pub order: Order,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Body {
+    class: Class,
+    symbol: String,
+    side: Side,
+    quantity: u64,
+    #[serde(alias = "type")]
+    order_type: Type,
+    duration: Duration,
+    price: Option<f64>,
+    stop: Option<f64>,
+    tag: Option<String>,
+}
+
+#[allow(clippy::too_many_arguments)]
+pub fn post_order(
+    config: &TradierConfig,
+    account_id: String,
+    class: Class,
+    symbol: String,
+    side: Side,
+    quantity: u64,
+    order_type: Type,
+    duration: Duration,
+    price: Option<f64>,
+    stop: Option<f64>,
+    tag: Option<String>,
+) -> Result<OrderResponse> {
+    let body = Body {
+        class,
+        symbol,
+        side,
+        quantity,
+        order_type,
+        duration,
+        price,
+        stop,
+        tag,
+    };
+
+    let request = build_request_post(
+        config,
+        &format!("accounts/{}/orders", account_id),
+        Some(body),
+        None::<()>,
+    );
+    let response: OrderResponse = request.send()?.json()?;
+
+    Ok(response)
+}
+
+#[cfg(test)]
+mod tests {
+    use mockito::mock;
+
+    use crate::{
+        trading::{
+            orders::{Class, Duration, Side, Type},
+            post_order,
+        },
+        TradierConfig,
+    };
+
+    #[test]
+    fn test_post_order() {
+        let _m = mock("POST", "/v1/accounts/VA000000/orders")
+            .with_status(200)
+            .with_body(include_str!("test_requests/post_order.json"))
+            .create();
+
+        let config = TradierConfig {
+            token: "xxx".into(),
+            endpoint: mockito::server_url(),
+        };
+
+        let response = post_order(
+            &config,
+            "VA000000".into(),
+            Class::equity,
+            "AAPL".into(),
+            Side::buy,
+            100,
+            Type::market,
+            Duration::gtc,
+            None,
+            None,
+            None,
+        );
+        assert!(response.is_ok());
+    }
+}
