@@ -105,8 +105,8 @@ mod tests {
 
     use crate::{
         trading::{
+            orders::post_order,
             orders::{Class, Duration, Side, Type},
-            post_order,
         },
         TradierConfig,
     };
