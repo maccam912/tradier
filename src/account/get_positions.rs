@@ -32,13 +32,17 @@ pub struct PositionsRoot {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct SinglePositionsRoot {
-    positions: SinglePosition,
+    positions: Option<SinglePosition>,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+struct EmptyPositionsRoot {}
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(untagged)]
 enum PositionsEnum {
     PositionsUnit(SinglePositionsRoot),
+    PositionsEmpty(EmptyPositionsRoot),
     PositionsVec(PositionsRoot),
 }
 
@@ -47,8 +51,14 @@ impl From<PositionsEnum> for PositionsRoot {
         match item {
             PositionsEnum::PositionsUnit(unit) => PositionsRoot {
                 positions: Positions {
-                    position: vec![unit.positions.position],
+                    position: match unit.positions {
+                        Some(pos) => vec![pos.position],
+                        None => vec![],
+                    },
                 },
+            },
+            PositionsEnum::PositionsEmpty(_) => PositionsRoot {
+                positions: Positions { position: vec![] },
             },
             PositionsEnum::PositionsVec(root) => root,
         }
