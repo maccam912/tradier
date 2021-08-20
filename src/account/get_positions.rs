@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{build_request_get, TradierConfig};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Position {
     pub cost_basis: f64,
     pub date_acquired: DateTime<Utc>,
@@ -15,7 +15,7 @@ pub struct Position {
     pub symbol: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Positions {
     pub position: Vec<Position>,
 }
@@ -25,7 +25,7 @@ struct SinglePosition {
     position: Position,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PositionsRoot {
     pub positions: Positions,
 }
