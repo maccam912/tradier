@@ -42,8 +42,8 @@ struct EmptyPositionsRoot {}
 #[serde(untagged)]
 enum PositionsEnum {
     Unit(SinglePositionsRoot),
-    Empty(EmptyPositionsRoot),
     Vec(PositionsRoot),
+    Empty(EmptyPositionsRoot),
 }
 
 impl From<PositionsEnum> for PositionsRoot {
