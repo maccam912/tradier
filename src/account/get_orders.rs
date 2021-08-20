@@ -31,7 +31,7 @@ pub struct Order {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Orders {
-    pub order: Vec<Order>,
+    pub order: Option<Vec<Order>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
