@@ -7,17 +7,17 @@ use serde::{Deserialize, Serialize};
 use crate::{build_request_get, TradierConfig};
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Position {
-    cost_basis: f64,
-    date_acquired: DateTime<Utc>,
-    id: u64,
-    quantity: f64,
-    symbol: String,
+pub struct Position {
+    pub cost_basis: f64,
+    pub date_acquired: DateTime<Utc>,
+    pub id: u64,
+    pub quantity: f64,
+    pub symbol: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Positions {
-    position: Vec<Position>,
+pub struct Positions {
+    pub position: Vec<Position>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -27,7 +27,7 @@ struct SinglePosition {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PositionsRoot {
-    positions: Positions,
+    pub positions: Positions,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

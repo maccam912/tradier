@@ -1,12 +1,7 @@
-mod get_balances;
-pub use get_balances::get_balances;
-pub use get_balances::BalancesRoot;
+pub mod get_balances;
 
-mod get_history;
-pub use get_history::get_history;
+pub mod get_history;
 
-mod get_positions;
-pub use get_positions::get_positions;
+pub mod get_positions;
 
-mod get_user_profile;
-pub use get_user_profile::get_user_profile;
+pub mod get_user_profile;
