@@ -9,24 +9,24 @@ use crate::{build_request_get, Class, Duration, OrderStatus, OrderType, Side, Tr
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Order {
-    id: u64,
+    pub id: u64,
     #[serde(alias = "type")]
-    order_type: OrderType,
-    symbol: String,
-    side: Side,
-    quantity: f64,
-    status: OrderStatus,
-    duration: Duration,
-    price: Option<f64>,
-    avg_fill_price: f64,
-    exec_quantity: f64,
-    last_fill_price: f64,
-    last_fill_quantity: f64,
-    remaining_quantity: f64,
-    create_date: DateTime<Utc>,
-    transaction_date: DateTime<Utc>,
-    class: Class,
-    leg: Option<Vec<Order>>,
+    pub order_type: OrderType,
+    pub symbol: String,
+    pub side: Side,
+    pub quantity: f64,
+    pub status: OrderStatus,
+    pub duration: Duration,
+    pub price: Option<f64>,
+    pub avg_fill_price: f64,
+    pub exec_quantity: f64,
+    pub last_fill_price: f64,
+    pub last_fill_quantity: f64,
+    pub remaining_quantity: f64,
+    pub create_date: DateTime<Utc>,
+    pub transaction_date: DateTime<Utc>,
+    pub class: Class,
+    pub leg: Option<Vec<Order>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -55,9 +55,12 @@ struct Query {
 }
 
 impl From<MaybeOrdersRoot> for OrdersRoot {
-    fn from(_: MaybeOrdersRoot) -> Self {
-        OrdersRoot {
-            orders: Orders { order: vec![] },
+    fn from(o: MaybeOrdersRoot) -> Self {
+        match o {
+            MaybeOrdersRoot::SomeOrders(or) => or,
+            _ => OrdersRoot {
+                orders: Orders { order: vec![] },
+            },
         }
     }
 }
