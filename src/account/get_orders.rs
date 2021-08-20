@@ -35,23 +35,31 @@ pub struct Orders {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct EmptyOrders {}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-#[serde(untagged)]
-pub enum MaybeOrders {
-    Some(Orders),
-    None(EmptyOrders),
+pub struct OrdersRoot {
+    pub orders: Orders,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct OrdersRoot {
-    pub orders: MaybeOrders,
+pub struct NoOrdersRoot {}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(untagged)]
+pub enum MaybeOrdersRoot {
+    SomeOrders(OrdersRoot),
+    NoneOrders(NoOrdersRoot),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct Query {
     includeTags: bool,
+}
+
+impl From<MaybeOrdersRoot> for OrdersRoot {
+    fn from(_: MaybeOrdersRoot) -> Self {
+        OrdersRoot {
+            orders: Orders { order: vec![] },
+        }
+    }
 }
 
 pub fn get_orders(
@@ -61,7 +69,7 @@ pub fn get_orders(
 ) -> Result<OrdersRoot> {
     let query = Query { includeTags };
 
-    let response: OrdersRoot = build_request_get(
+    let response: MaybeOrdersRoot = build_request_get(
         config,
         &format!("accounts/{}/orders", account_id),
         None::<()>,
@@ -70,7 +78,7 @@ pub fn get_orders(
     .send()?
     .json()?;
 
-    Ok(response)
+    Ok(response.into())
 }
 
 #[cfg(test)]

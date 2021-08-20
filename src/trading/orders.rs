@@ -17,13 +17,13 @@ pub struct OrderResponse {
     pub order: Order,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 struct Body {
     class: Class,
     symbol: String,
     side: Side,
     quantity: u64,
-    #[serde(alias = "type")]
+    #[serde(rename(serialize = "type"))]
     order_type: OrderType,
     duration: Duration,
     price: Option<f64>,
