@@ -31,12 +31,22 @@ pub struct Order {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Orders {
-    pub order: Option<Vec<Order>>,
+    pub order: Vec<Order>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct EmptyOrders {}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(untagged)]
+pub enum MaybeOrders {
+    Some(Orders),
+    None(EmptyOrders),
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct OrdersRoot {
-    pub orders: Orders,
+    pub orders: MaybeOrders,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
