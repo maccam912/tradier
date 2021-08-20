@@ -3,38 +3,7 @@
 use eyre::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::{build_request_post, TradierConfig};
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum Class {
-    equity,
-    option,
-    multileg,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum Side {
-    buy,
-    buy_to_cover,
-    sell,
-    sell_short,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum Type {
-    market,
-    limit,
-    stop,
-    stop_limit,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum Duration {
-    day,
-    gtc,
-    pre,
-    post,
-}
+use crate::{build_request_post, Class, Duration, OrderType, Side, TradierConfig};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Order {
@@ -55,7 +24,7 @@ struct Body {
     side: Side,
     quantity: u64,
     #[serde(alias = "type")]
-    order_type: Type,
+    order_type: OrderType,
     duration: Duration,
     price: Option<f64>,
     stop: Option<f64>,
@@ -70,7 +39,7 @@ pub fn post_order(
     symbol: String,
     side: Side,
     quantity: u64,
-    order_type: Type,
+    order_type: OrderType,
     duration: Duration,
     price: Option<f64>,
     stop: Option<f64>,
@@ -103,13 +72,7 @@ pub fn post_order(
 mod tests {
     use mockito::mock;
 
-    use crate::{
-        trading::{
-            orders::post_order,
-            orders::{Class, Duration, Side, Type},
-        },
-        TradierConfig,
-    };
+    use crate::{trading::orders::post_order, Class, Duration, OrderType, Side, TradierConfig};
 
     #[test]
     fn test_post_order() {
@@ -130,7 +93,7 @@ mod tests {
             "AAPL".into(),
             Side::buy,
             100,
-            Type::market,
+            OrderType::market,
             Duration::gtc,
             None,
             None,

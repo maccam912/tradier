@@ -4,30 +4,7 @@ use chrono::{DateTime, Utc};
 use eyre::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::{build_request_get, TradierConfig};
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum Classification {
-    individual,
-    entity,
-    joint_survivor,
-    traditional_ira,
-    roth_ira,
-    rollover_ira,
-    sep_ira,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum Status {
-    active,
-    closed,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum Type {
-    cash,
-    margin,
-}
+use crate::{build_request_get, AccountStatus, AccountType, Classification, TradierConfig};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Account {
@@ -36,9 +13,9 @@ pub struct Account {
     pub date_created: DateTime<Utc>,
     pub day_trader: bool,
     pub option_level: u8,
-    pub status: Status,
+    pub status: AccountStatus,
     #[serde(alias = "type")]
-    pub account_type: Type,
+    pub account_type: AccountType,
     pub last_update_date: DateTime<Utc>,
 }
 
