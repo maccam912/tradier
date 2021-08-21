@@ -3,16 +3,18 @@
 use eyre::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::{build_request_post, Class, Duration, OrderType, Side, TradierConfig};
+use crate::{
+    build_request_del, build_request_post, Class, Duration, OrderType, Side, TradierConfig,
+};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Order {
     pub id: u64,
     pub status: String,
     pub partner_id: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct OrderResponse {
     pub order: Order,
 }
@@ -68,11 +70,32 @@ pub fn post_order(
     Ok(response)
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct CancelledResponse {
+    order: Order,
+}
+
+pub fn cancel_order(
+    config: &TradierConfig,
+    account_id: String,
+    order_id: i64,
+) -> Result<CancelledResponse> {
+    let request = build_request_del(
+        config,
+        &format!("accounts/{}/orders/{}", account_id, order_id),
+    );
+    let response: CancelledResponse = request.send()?.json()?;
+    Ok(response)
+}
+
 #[cfg(test)]
 mod tests {
     use mockito::mock;
 
-    use crate::{trading::orders::post_order, Class, Duration, OrderType, Side, TradierConfig};
+    use crate::{
+        trading::orders::{cancel_order, post_order},
+        Class, Duration, OrderType, Side, TradierConfig,
+    };
 
     #[test]
     fn test_post_order() {
@@ -99,6 +122,23 @@ mod tests {
             None,
             None,
         );
+        assert!(response.is_ok());
+    }
+
+    #[test]
+    fn test_del_order() {
+        let _m = mock("DELETE", "/v1/accounts/VA000000/orders/1")
+            .with_status(200)
+            .with_body(include_str!("test_requests/del_order.json"))
+            .create();
+
+        let config = TradierConfig {
+            token: "xxx".into(),
+            endpoint: mockito::server_url(),
+        };
+
+        let response = cancel_order(&config, "VA000000".into(), 1);
+
         assert!(response.is_ok());
     }
 }

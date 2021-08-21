@@ -128,6 +128,14 @@ fn build_request_post(
     request
 }
 
+fn build_request_del(config: &TradierConfig, path: &str) -> RequestBuilder {
+    let token: &str = &config.token;
+    let mut request = CLIENT.delete(endpoint(config, path));
+    request = request.header("Accept", "application/json");
+    request = request.header("Authorization", format!("Bearer {}", token));
+    request
+}
+
 pub mod account;
 pub mod market_data;
 pub mod trading;
