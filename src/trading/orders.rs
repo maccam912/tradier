@@ -1,6 +1,7 @@
 #![allow(non_camel_case_types)]
 
 use eyre::{eyre, Result};
+use optimistic_derives::*;
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
@@ -8,19 +9,19 @@ use crate::{
     build_request_del, build_request_post, Class, Duration, OrderType, Side, TradierConfig,
 };
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic_no_c]
 pub struct Order {
     pub id: u64,
     pub status: String,
     pub partner_id: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic_no_c]
 pub struct OrderResponse {
     pub order: Order,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic_no_ceho]
 struct Body {
     class: Class,
     symbol: String,
@@ -71,7 +72,7 @@ pub fn post_order(
     Ok(response)
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic_no_c]
 pub struct CancelledResponse {
     order: Order,
 }

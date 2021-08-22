@@ -3,11 +3,12 @@
 
 use chrono::{DateTime, Utc};
 use eyre::Result;
+use optimistic_derives::*;
 use serde::{Deserialize, Serialize};
 
 use crate::{build_request_get, Class, Duration, OrderStatus, OrderType, Side, TradierConfig};
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic_no_ceho]
 pub struct Order {
     pub id: u64,
     #[serde(alias = "type")]
@@ -29,27 +30,27 @@ pub struct Order {
     pub leg: Option<Vec<Order>>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic_no_ceho]
 pub struct Orders {
     pub order: Vec<Order>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic_no_ceho]
 pub struct OrdersRoot {
     pub orders: Orders,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic_no_ceho]
 pub struct NoOrdersRoot {}
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic_no_ceho]
 #[serde(untagged)]
 pub enum MaybeOrdersRoot {
     SomeOrders(OrdersRoot),
     NoneOrders(NoOrdersRoot),
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic_no_ceho]
 struct Query {
     includeTags: bool,
 }

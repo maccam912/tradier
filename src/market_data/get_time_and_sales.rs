@@ -3,11 +3,12 @@
 use chrono::{DateTime, NaiveDateTime, TimeZone, Utc};
 use chrono_tz::America::New_York;
 use eyre::{eyre, Result};
+use optimistic_derives::*;
 use serde::{Deserialize, Serialize};
 
 use crate::{build_request_get, TradierConfig};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct NaiveData {
     time: NaiveDateTime,
     timestamp: i64,
@@ -20,7 +21,7 @@ struct NaiveData {
     vwap: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 pub struct Data {
     pub time: DateTime<Utc>,
     pub timestamp: i64,
@@ -50,12 +51,12 @@ impl From<NaiveData> for Data {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct NaiveSeries {
     data: Vec<NaiveData>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 pub struct Series {
     pub data: Vec<Data>,
 }
@@ -67,12 +68,12 @@ impl From<NaiveSeries> for Series {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 pub struct NaiveHistorySeries {
     series: NaiveSeries,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 pub struct HistorySeries {
     pub series: Series,
 }
@@ -85,13 +86,13 @@ impl From<NaiveHistorySeries> for HistorySeries {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic]
 pub enum SessionFilter {
     all,
     open,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic_no_c]
 struct Query {
     symbol: String,
     interval: Option<String>,

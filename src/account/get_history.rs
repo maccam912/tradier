@@ -2,29 +2,30 @@
 
 use chrono::{DateTime, Utc};
 use eyre::Result;
+use optimistic_derives::*;
 use serde::{Deserialize, Serialize};
 
 use crate::{build_request_get, TradierConfig};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic]
 enum TradeType {
     Equity,
     Option,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct Dividend {
     description: String,
     quantity: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct DivAdj {
     description: String,
     quantity: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct Trade {
     commission: f64,
     description: String,
@@ -34,7 +35,7 @@ struct Trade {
     trade_type: TradeType,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct DividendEvent {
     amount: f64,
     date: DateTime<Utc>,
@@ -43,7 +44,7 @@ struct DividendEvent {
     adjustment: Dividend,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct DivAdjEvent {
     amount: f64,
     date: DateTime<Utc>,
@@ -52,26 +53,26 @@ struct DivAdjEvent {
     adjustment: DivAdj,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct Journal {
     description: String,
     quantity: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic]
 enum OptionType {
     OPTEXP,
     expiration,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct TradierOption {
     option_type: OptionType,
     description: String,
     quantity: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct JournalEvent {
     amount: f64,
     date: DateTime<Utc>,
@@ -80,7 +81,7 @@ struct JournalEvent {
     journal: Journal,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct OptionEvent {
     amount: f64,
     date: DateTime<Utc>,
@@ -89,7 +90,7 @@ struct OptionEvent {
     option: TradierOption,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct TradeEvent {
     amount: f64,
     date: DateTime<Utc>,
@@ -98,7 +99,7 @@ struct TradeEvent {
     trade: Trade,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic]
 pub enum EventTypeEnum {
     trade,
     option,
@@ -115,7 +116,7 @@ pub enum EventTypeEnum {
     DIVADJ,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 #[serde(untagged)]
 enum EventType {
     Dividend(DividendEvent),
@@ -125,27 +126,27 @@ enum EventType {
     Trade(TradeEvent),
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct SingleHistory {
     event: EventType,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct History {
     event: Vec<EventType>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 pub struct HistoryRoot {
     history: History,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct SingleHistoryRoot {
     history: SingleHistory,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 #[serde(untagged)]
 enum HistoryEnum {
     HistoryUnit(SingleHistoryRoot),
@@ -165,7 +166,7 @@ impl From<HistoryEnum> for HistoryRoot {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_c]
 struct Query {
     page: Option<u64>,
     limit: Option<u64>,

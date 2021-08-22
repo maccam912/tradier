@@ -2,11 +2,12 @@
 
 use chrono::{DateTime, Utc};
 use eyre::Result;
+use optimistic_derives::*;
 use serde::{Deserialize, Serialize};
 
 use crate::{build_request_get, TradierConfig};
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic_no_ceho]
 pub struct Position {
     pub cost_basis: f64,
     pub date_acquired: DateTime<Utc>,
@@ -15,30 +16,30 @@ pub struct Position {
     pub symbol: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic_no_ceho]
 pub struct Positions {
     pub position: Vec<Position>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct SinglePosition {
     position: Position,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic_no_ceho]
 pub struct PositionsRoot {
     pub positions: Positions,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct SinglePositionsRoot {
     positions: Option<SinglePosition>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 struct EmptyPositionsRoot {}
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 #[serde(untagged)]
 enum PositionsEnum {
     Unit(SinglePositionsRoot),

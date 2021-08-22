@@ -2,11 +2,12 @@
 
 use chrono::{DateTime, Utc};
 use eyre::Result;
+use optimistic_derives::*;
 use serde::{Deserialize, Serialize};
 
 use crate::{build_request_get, AccountStatus, AccountType, Classification, TradierConfig};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_c]
 pub struct Account {
     pub account_number: String,
     pub classification: Classification,
@@ -19,31 +20,31 @@ pub struct Account {
     pub last_update_date: DateTime<Utc>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_c]
 pub struct Profile {
     pub id: String,
     pub name: String,
     pub account: Vec<Account>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_c]
 struct SingleProfile {
     id: String,
     name: String,
     account: Account,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_c]
 pub struct UserProfile {
     pub profile: Profile,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_c]
 struct SingleUserProfile {
     profile: SingleProfile,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_c]
 #[serde(untagged)]
 enum ProfileEnum {
     ProfileUnit(SingleUserProfile),

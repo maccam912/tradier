@@ -1,11 +1,12 @@
 #![allow(non_camel_case_types)]
 use chrono::NaiveDate;
 use eyre::Result;
+use optimistic_derives::*;
 use serde::{Deserialize, Serialize};
 
 use crate::{build_request_get, TradierConfig};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic]
 pub enum QuoteType {
     stock,
     option,
@@ -14,13 +15,13 @@ pub enum QuoteType {
     mutual_fund,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic]
 pub enum OptionType {
     put,
     call,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 pub struct Quote {
     pub symbol: String,
     pub description: String,
@@ -59,17 +60,17 @@ pub struct Quote {
     pub root_symbol: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 pub struct Quotes {
     pub quote: Vec<Quote>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[optimistic_no_ceho]
 pub struct GetQuotes {
     pub quotes: Quotes,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[optimistic]
 struct Query {
     greeks: bool,
 }

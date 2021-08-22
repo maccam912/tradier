@@ -4,17 +4,19 @@ use once_cell::sync::Lazy;
 use reqwest::blocking::RequestBuilder;
 use serde::{Deserialize, Serialize};
 
+use optimistic_derives::*;
+
 const VERSION: &str = "v1";
 
 static CLIENT: Lazy<reqwest::blocking::Client> = Lazy::new(reqwest::blocking::Client::new);
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[optimistic_no_c]
 pub struct TradierConfig {
     pub token: String,
     pub endpoint: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+#[optimistic]
 pub enum OrderType {
     market,
     limit,
@@ -31,7 +33,7 @@ impl std::fmt::Display for OrderType {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+#[optimistic]
 pub enum Class {
     equity,
     option,
@@ -45,7 +47,7 @@ impl std::fmt::Display for Class {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic]
 pub enum Side {
     buy,
     buy_to_cover,
@@ -57,7 +59,7 @@ pub enum Side {
     sell_to_close,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic]
 pub enum Duration {
     day,
     gtc,
@@ -65,7 +67,7 @@ pub enum Duration {
     post,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic]
 pub enum OrderStatus {
     open,
     partially_filled,
@@ -80,7 +82,7 @@ pub enum OrderStatus {
     held,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic]
 pub enum Classification {
     individual,
     entity,
@@ -91,13 +93,13 @@ pub enum Classification {
     sep_ira,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic]
 pub enum AccountType {
     cash,
     margin,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[optimistic]
 pub enum AccountStatus {
     active,
     closed,
