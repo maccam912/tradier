@@ -25,7 +25,7 @@ pub enum OrderType {
     even,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub enum Class {
     equity,
     option,
