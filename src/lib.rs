@@ -14,7 +14,7 @@ pub struct TradierConfig {
     pub endpoint: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub enum OrderType {
     market,
     limit,
@@ -23,6 +23,12 @@ pub enum OrderType {
     debit,
     credit,
     even,
+}
+
+impl std::fmt::Display for OrderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
