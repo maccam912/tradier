@@ -1,6 +1,7 @@
 #![allow(non_camel_case_types)]
 
-use eyre::Result;
+use eyre::{eyre, Result};
+use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -11,7 +12,7 @@ use crate::{
 pub struct Order {
     pub id: u64,
     pub status: String,
-    pub partner_id: String,
+    pub partner_id: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -84,8 +85,13 @@ pub fn cancel_order(
         config,
         &format!("accounts/{}/orders/{}", account_id, order_id),
     );
-    let response: CancelledResponse = request.send()?.json()?;
-    Ok(response)
+    let response = request.send()?;
+    if response.status().clone() == StatusCode::OK {
+        let cancel: CancelledResponse = response.json()?;
+        Ok(cancel)
+    } else {
+        Err(eyre!("{:?}", response.text()))
+    }
 }
 
 #[cfg(test)]
@@ -138,6 +144,7 @@ mod tests {
         };
 
         let response = cancel_order(&config, "VA000000".into(), 1);
+        println!("{:?}", response);
 
         assert!(response.is_ok());
     }
