@@ -67,9 +67,11 @@ pub fn post_order(
         Some(body),
         None::<()>,
     );
-    let response: OrderResponse = request.send()?.json()?;
-
-    Ok(response)
+    let response = request.send();
+    log::debug!("response: {:?}", response);
+    let order_response: Result<OrderResponse, reqwest::Error> = response?.json();
+    log::debug!("order_response: {:?}", order_response);
+    Ok(order_response?)
 }
 
 #[optimistic_no_c]
